@@ -60,11 +60,27 @@ public class HufdanEncoder {
         return ret;
     }
 
-    public static byte[] encode(String s) {
+    public static byte[] encodeMessage(String message, Map<String, String> dictionary) {
+        BitSet bitSet = new BitSet();
+        var foo = message.chars()
+                .mapToObj(Character::toString)
+                .map(dictionary::get)
+                .collect(Collectors.joining());
+        for(byte b : foo.getBytes()) {
+            bitSet.set(bitSet.length(), b == '1');
+        }
+        return bitSet.toByteArray();
+    }
+
+    public static Map<String, String> generateDictionary(String s) {
         var charCount = countChars(s);
         var pq = toPriorityQueue(charCount);
         var tree = collapseToTree(pq);
-        var dict = toHufdanDict(tree);
-        return s.getBytes();
+        return toHufdanDict(tree);
+    }
+
+    public static byte[] encode(String s) {
+        var dictionary = generateDictionary(s);
+        return encodeMessage(s, dictionary);
     }
 }
