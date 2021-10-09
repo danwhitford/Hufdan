@@ -1,9 +1,6 @@
 package encode;
 
-import types.HufdanInternalNode;
-import types.HufdanLeafNode;
-import types.HufdanQueueEntry;
-import types.IHufdanNode;
+import types.*;
 
 import java.util.*;
 import java.util.function.Function;
@@ -38,10 +35,10 @@ public class HufdanEncoder {
         return pq.poll();
     }
 
-    private static Map<String, String> toHufdanDict(IHufdanNode root) {
-        Map<String, String> ret = new HashMap<>();
+    private static Map<String, List<Boolean>> toHufdanDict(IHufdanNode root) {
+        Map<String, List<Boolean>> ret = new HashMap<>();
         Queue<HufdanQueueEntry> q = new ArrayDeque<>();
-        q.add(new HufdanQueueEntry(root, ""));
+        q.add(new HufdanQueueEntry(root, new ArrayList<>()));
 
         while (!q.isEmpty()) {
             var head = q.poll();
@@ -49,9 +46,13 @@ public class HufdanEncoder {
                 ret.put(((HufdanLeafNode) head.getNode()).getVal(), head.getCode());
             } else if (head.getNode() instanceof HufdanInternalNode) {
                 var internal = (HufdanInternalNode) head.getNode();
-                var code = head.getCode();
-                q.offer(new HufdanQueueEntry(internal.getLeft(), code + "0"));
-                q.offer(new HufdanQueueEntry(internal.getRight(), code + "1"));
+                List<Boolean> code = head.getCode();
+                List<Boolean> leftCode = new ArrayList<>(code);
+                leftCode.add(false);
+                List<Boolean> rightCode = new ArrayList<>(code);
+                rightCode.add(true);
+                q.offer(new HufdanQueueEntry(internal.getLeft(), leftCode));
+                q.offer(new HufdanQueueEntry(internal.getRight(), rightCode));
             } else {
                 throw new RuntimeException("Unknown Hufdan node type");
             }
@@ -60,27 +61,25 @@ public class HufdanEncoder {
         return ret;
     }
 
-    public static byte[] encodeMessage(String message, Map<String, String> dictionary) {
-        BitSet bitSet = new BitSet();
-        var foo = message.chars()
+    public static List<Boolean> encodeMessage(String message, Map<String, List<Boolean>> dictionary) {
+        List<Boolean> foo = new ArrayList<>();
+        message.chars()
                 .mapToObj(Character::toString)
                 .map(dictionary::get)
-                .collect(Collectors.joining());
-        for(byte b : foo.getBytes()) {
-            bitSet.set(bitSet.length(), b == '1');
-        }
-        return bitSet.toByteArray();
+                .forEach(foo::addAll);
+
+        return foo;
     }
 
-    public static Map<String, String> generateDictionary(String s) {
+    public static Map<String, List<Boolean>> generateDictionary(String s) {
         var charCount = countChars(s);
         var pq = toPriorityQueue(charCount);
         var tree = collapseToTree(pq);
         return toHufdanDict(tree);
     }
 
-    public static byte[] encode(String s) {
-        var dictionary = generateDictionary(s);
-        return encodeMessage(s, dictionary);
+    public static HufdanEncoded encode(String s) {
+        Map<String, List<Boolean>> dictionary = generateDictionary(s);
+        return new HufdanEncoded(encodeMessage(s, dictionary), dictionary);
     }
 }

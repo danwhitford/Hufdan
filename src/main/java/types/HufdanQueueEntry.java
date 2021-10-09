@@ -1,19 +1,21 @@
 package types;
 
+import java.util.List;
+
 public class HufdanQueueEntry {
     private IHufdanNode node;
-    private String code;
+    private List<Boolean> code;
 
-    public HufdanQueueEntry(IHufdanNode node, String code) {
+    public HufdanQueueEntry(IHufdanNode node, List<Boolean> code) {
         this.node = node;
         this.code = code;
     }
 
-    public String getCode() {
+    public List<Boolean> getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(List<Boolean> code) {
         this.code = code;
     }
 
