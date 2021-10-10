@@ -1,20 +1,25 @@
 package types;
 
-import java.util.HashMap;
+import java.io.Serializable;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
-public class HufdanEncoded {
-    private List<Boolean> encoded;
-    private Map<String, List<Boolean>> dictionary;
+public class HufdanEncoded implements Serializable {
+    private final BitSet encodedBits;
+    private final Map<String, List<Boolean>> dictionary;
 
     public HufdanEncoded(List<Boolean> encoded, Map<String, List<Boolean>> dictionary) {
-        this.encoded = encoded;
         this.dictionary = dictionary;
+
+        this.encodedBits = new BitSet();
+        for(int i=0; i < encoded.size(); ++i) {
+            encodedBits.set(i, encoded.get(i));
+        }
     }
 
-    public List<Boolean> getEncoded() {
-        return encoded;
+    public BitSet getEncodedBits() {
+        return encodedBits;
     }
 
     public Map<String, List<Boolean>> getDictionary() {
