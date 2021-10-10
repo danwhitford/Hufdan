@@ -1,4 +1,5 @@
 import encode.HufdanEncoder;
+import io.HufdanFileWriter;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,10 +11,9 @@ public class Hufdan {
         var e = HufdanEncoder.encode(s);
         System.out.println(s);
         System.out.println(e.getDictionary());
-        System.out.println(e.getEncodedBits());
+        System.out.println(e.getEncoded());
 
-        FileOutputStream fout = new FileOutputStream("test.out");
-        ObjectOutputStream oos = new ObjectOutputStream(fout);
-        oos.writeObject(e);
+        var writer = new HufdanFileWriter(e);
+        writer.write("test.out");
     }
 }
