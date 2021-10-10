@@ -2,19 +2,18 @@ package io;
 
 import types.HufdanEncoded;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.BitSet;
 
 public class HufdanFileWriter {
-    private HufdanSerilizable hufdanSerilizable;
+    private HufdanSerializable hufdanSerilizable;
 
     public HufdanFileWriter(HufdanEncoded hufdanEncoded) {
         var bits = messageToBits(hufdanEncoded);
         var dict = hufdanEncoded.getDictionary();
-        this.hufdanSerilizable = new HufdanSerilizable(dict, bits);
+        this.hufdanSerilizable = new HufdanSerializable(dict, bits);
     }
 
     private BitSet messageToBits(HufdanEncoded hufdanEncoded) {
