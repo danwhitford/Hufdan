@@ -1,6 +1,10 @@
 package io;
 
+import decode.HufdanDecoder;
 import types.HufdanEncoded;
+import types.HufdanInternalNode;
+import types.HufdanLeafNode;
+import types.IHufdanNode;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,8 +16,8 @@ public class HufdanFileWriter {
 
     public HufdanFileWriter(HufdanEncoded hufdanEncoded) {
         var bits = messageToBits(hufdanEncoded);
-        var dict = hufdanEncoded.getDictionary();
-        this.hufdanSerilizable = new HufdanSerializable(dict, bits);
+        var treeArray = treeToArray(hufdanEncoded);
+        this.hufdanSerilizable = new HufdanSerializable(treeArray, bits);
     }
 
     private BitSet messageToBits(HufdanEncoded hufdanEncoded) {
@@ -22,6 +26,24 @@ public class HufdanFileWriter {
             bitSet.set(i, hufdanEncoded.getEncoded().get(i));
         }
         return bitSet;
+    }
+
+    private String preOrderCollect(IHufdanNode node, StringBuilder builder) {
+        if(node instanceof HufdanLeafNode) {
+            builder.append(1);
+            builder.append(((HufdanLeafNode) node).getVal());
+        } else if (node instanceof HufdanInternalNode) {
+            builder.append(0);
+            preOrderCollect(((HufdanInternalNode) node).getLeft(), builder);
+            preOrderCollect(((HufdanInternalNode) node).getRight(), builder);
+        }
+        return builder.toString();
+    }
+
+    private char[] treeToArray(HufdanEncoded hufdanEncoded) {
+        StringBuilder stringBuilder = new StringBuilder();
+        var current = hufdanEncoded.getTree();
+        return preOrderCollect(current, stringBuilder).toCharArray();
     }
 
     public void write(String fname) throws IOException {

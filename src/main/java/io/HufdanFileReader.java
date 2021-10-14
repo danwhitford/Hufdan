@@ -1,15 +1,34 @@
 package io;
 
-import types.HufdanEncoded;
+import types.*;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
 public class HufdanFileReader {
+    private static List<Boolean> bitsToEncoded(BitSet bs) {
+        List<Boolean> encoded = new ArrayList<>();
+        for(int i=0; i < bs.length(); ++i) {
+            encoded.add(bs.get(i));
+        }
+        return encoded;
+    }
+
+    private static IHufdanNode arrayToTree(StringReader reader) throws IOException {
+        var head = reader.read();
+        if (head == '1') {
+            var ch = new String(Character.toChars(reader.read()));
+            return new HufdanLeafNode(String.valueOf(ch), 0L);
+        } else {
+            var left = arrayToTree(reader);
+            var right = arrayToTree(reader);
+            return new HufdanInternalNode(left, right);
+        }
+    }
+
     public static HufdanEncoded read(String fname) throws IOException, ClassNotFoundException {
         FileInputStream fileIn = new FileInputStream(fname);
         ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -17,12 +36,9 @@ public class HufdanFileReader {
         in.close();
         fileIn.close();
 
-        List<Boolean> encoded = new ArrayList<>();
-        var bs = e.getEncoded();
-        var dict = e.getDictionary();
-        for(int i=0; i < bs.length(); ++i) {
-            encoded.add(bs.get(i));
-        }
-        return new HufdanEncoded(encoded, dict);
+        var encoded = bitsToEncoded(e.getEncoded());
+        IHufdanNode tree = arrayToTree(new StringReader(new String(e.getTree())));
+
+        return new HufdanEncoded(encoded, tree);
     }
 }

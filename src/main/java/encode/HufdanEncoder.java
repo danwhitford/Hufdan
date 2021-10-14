@@ -71,15 +71,17 @@ public class HufdanEncoder {
         return foo;
     }
 
-    public static Map<String, List<Boolean>> generateDictionary(String s) {
+
+    public static IHufdanNode generateTree(String s) {
         var charCount = countChars(s);
         var pq = toPriorityQueue(charCount);
-        var tree = collapseToTree(pq);
-        return toHufdanDict(tree);
+        return collapseToTree(pq);
     }
 
+
     public static HufdanEncoded encode(String s) {
-        Map<String, List<Boolean>> dictionary = generateDictionary(s);
-        return new HufdanEncoded(encodeMessage(s, dictionary), dictionary);
+        var tree = generateTree(s);
+        var dictionary = toHufdanDict(tree);
+        return new HufdanEncoded(encodeMessage(s, dictionary), tree);
     }
 }

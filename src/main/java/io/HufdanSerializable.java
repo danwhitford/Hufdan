@@ -1,21 +1,21 @@
 package io;
 
+import types.IHufdanNode;
+
 import java.io.Serializable;
 import java.util.BitSet;
-import java.util.List;
-import java.util.Map;
 
 public class HufdanSerializable implements Serializable {
-    private final Map<String, List<Boolean>> dictionary;
+    private final char[] tree;
     private final BitSet encoded;
 
-    public HufdanSerializable(Map<String, List<Boolean>> dictionary, BitSet encoded) {
-        this.dictionary = dictionary;
+    public HufdanSerializable(char[] tree, BitSet encoded) {
+        this.tree = tree;
         this.encoded = encoded;
     }
 
-    public Map<String, List<Boolean>> getDictionary() {
-        return dictionary;
+    public char[] getTree() {
+        return tree;
     }
 
     public BitSet getEncoded() {

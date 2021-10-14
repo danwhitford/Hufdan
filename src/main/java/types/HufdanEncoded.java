@@ -1,16 +1,14 @@
 package types;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 public class HufdanEncoded {
-    private List<Boolean> encoded;
-    private Map<String, List<Boolean>> dictionary;
+    private final List<Boolean> encoded;
+    private final IHufdanNode tree;
 
-    public HufdanEncoded(List<Boolean> encoded, Map<String, List<Boolean>> dictionary) {
+    public HufdanEncoded(List<Boolean> encoded, IHufdanNode tree) {
         this.encoded = encoded;
-        this.dictionary = dictionary;
+        this.tree = tree;
 
     }
 
@@ -18,8 +16,8 @@ public class HufdanEncoded {
         return encoded;
     }
 
-    public Map<String, List<Boolean>> getDictionary() {
-        return dictionary;
+    public IHufdanNode getTree() {
+        return tree;
     }
 
 }

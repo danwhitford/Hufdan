@@ -1,6 +1,8 @@
 package types;
 
-public class HufdanInternalNode implements Comparable<IHufdanNode>, IHufdanNode {
+import java.io.Serializable;
+
+public class HufdanInternalNode implements Comparable<IHufdanNode>, IHufdanNode, Serializable {
     private final IHufdanNode right;
     private final IHufdanNode left;
     private final long weight;
