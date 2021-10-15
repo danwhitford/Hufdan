@@ -1,5 +1,6 @@
 package decode;
 
+import io.BitSetReader;
 import types.HufdanEncoded;
 import types.HufdanInternalNode;
 import types.HufdanLeafNode;
@@ -11,7 +12,8 @@ public class HufdanDecoder {
     public static String decode(HufdanEncoded encoded) {
         IHufdanNode root = encoded.getTree();
         IHufdanNode current = root;
-        List<Boolean> coded = encoded.getEncoded();
+
+        var coded = new BitSetReader(encoded.getEncoded());
         StringBuilder stringBuilder = new StringBuilder();
 
         for (Boolean b : coded) {

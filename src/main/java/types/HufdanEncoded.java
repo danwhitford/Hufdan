@@ -1,17 +1,18 @@
 package types;
 
+import java.util.BitSet;
 import java.util.List;
 
 public class HufdanEncoded {
-    private final List<Boolean> encoded;
+    private final BitSet encoded;
     private final IHufdanNode tree;
 
-    public HufdanEncoded(List<Boolean> encoded, IHufdanNode tree) {
+    public HufdanEncoded(BitSet encoded, IHufdanNode tree) {
         this.encoded = encoded;
         this.tree = tree;
     }
 
-    public List<Boolean> getEncoded() {
+    public BitSet getEncoded() {
         return encoded;
     }
 

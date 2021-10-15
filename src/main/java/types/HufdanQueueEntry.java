@@ -1,17 +1,19 @@
 package types;
 
+import io.BitSetBuilder;
+
 import java.util.List;
 
 public class HufdanQueueEntry {
     private IHufdanNode node;
-    private List<Boolean> code;
+    private BitSetBuilder code;
 
-    public HufdanQueueEntry(IHufdanNode node, List<Boolean> code) {
+    public HufdanQueueEntry(IHufdanNode node, BitSetBuilder code) {
         this.node = node;
         this.code = code;
     }
 
-    public List<Boolean> getCode() {
+    public BitSetBuilder getCode() {
         return code;
     }
 

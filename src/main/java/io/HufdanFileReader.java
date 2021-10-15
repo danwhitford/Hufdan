@@ -8,13 +8,6 @@ import java.util.BitSet;
 import java.util.List;
 
 public class HufdanFileReader {
-    private static List<Boolean> bitsToEncoded(BitSet bs) {
-        List<Boolean> encoded = new ArrayList<>();
-        for(int i=0; i < bs.length() - 1; ++i) {
-            encoded.add(bs.get(i));
-        }
-        return encoded;
-    }
 
     private static IHufdanNode arrayToTree(StringReader reader, BitSetReader bitsetReader) throws IOException {
         var nextBit = bitsetReader.read();
@@ -35,10 +28,12 @@ public class HufdanFileReader {
         in.close();
         fileIn.close();
 
-        var encoded = bitsToEncoded(e.getEncoded());
+        var encoded = e.getEncoded();
+
+        var stringReader = new StringReader(new String(e.getTree()));
+        var bitSetReader = new BitSetReader(e.getTreeKey());
         IHufdanNode tree = arrayToTree(
-                new StringReader(new String(e.getTree())),
-                new BitSetReader(e.getTreeKey())
+                stringReader, bitSetReader
         );
 
         return new HufdanEncoded(encoded, tree);

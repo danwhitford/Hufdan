@@ -1,5 +1,6 @@
 package encode;
 
+import io.BitSetBuilder;
 import types.*;
 
 import java.util.*;
@@ -35,10 +36,10 @@ public class HufdanEncoder {
         return pq.poll();
     }
 
-    private static Map<String, List<Boolean>> toHufdanDict(IHufdanNode root) {
-        Map<String, List<Boolean>> ret = new HashMap<>();
+    private static Map<String, BitSetBuilder> toHufdanDict(IHufdanNode root) {
+        Map<String, BitSetBuilder> ret = new HashMap<>();
         Queue<HufdanQueueEntry> q = new ArrayDeque<>();
-        q.add(new HufdanQueueEntry(root, new ArrayList<>()));
+        q.add(new HufdanQueueEntry(root, new BitSetBuilder()));
 
         while (!q.isEmpty()) {
             var head = q.poll();
@@ -46,11 +47,13 @@ public class HufdanEncoder {
                 ret.put(((HufdanLeafNode) head.getNode()).getVal(), head.getCode());
             } else if (head.getNode() instanceof HufdanInternalNode) {
                 var internal = (HufdanInternalNode) head.getNode();
-                List<Boolean> code = head.getCode();
-                List<Boolean> leftCode = new ArrayList<>(code);
-                leftCode.add(false);
-                List<Boolean> rightCode = new ArrayList<>(code);
-                rightCode.add(true);
+
+                var code = head.getCode();
+                var leftCode = new BitSetBuilder(code);
+                leftCode.append(false);
+                var rightCode = new BitSetBuilder(code);
+                rightCode.append(true);
+
                 q.offer(new HufdanQueueEntry(internal.getLeft(), leftCode));
                 q.offer(new HufdanQueueEntry(internal.getRight(), rightCode));
             } else {
@@ -61,14 +64,14 @@ public class HufdanEncoder {
         return ret;
     }
 
-    public static List<Boolean> encodeMessage(String message, Map<String, List<Boolean>> dictionary) {
-        List<Boolean> foo = new ArrayList<>();
+    public static BitSet encodeMessage(String message, Map<String, BitSetBuilder> dictionary) {
+        BitSetBuilder builder = new BitSetBuilder();
         message.chars()
                 .mapToObj(Character::toString)
                 .map(dictionary::get)
-                .forEach(foo::addAll);
+                .forEach(builder::concat);
 
-        return foo;
+        return builder.buildWithFence();
     }
 
 
@@ -82,6 +85,7 @@ public class HufdanEncoder {
     public static HufdanEncoded encode(String s) {
         var tree = generateTree(s);
         var dictionary = toHufdanDict(tree);
-        return new HufdanEncoded(encodeMessage(s, dictionary), tree);
+        var encoded = encodeMessage(s, dictionary);
+        return new HufdanEncoded(encoded, tree);
     }
 }
