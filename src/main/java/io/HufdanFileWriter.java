@@ -17,13 +17,13 @@ public class HufdanFileWriter {
         var bits = messageToBits(hufdanEncoded);
 
         StringBuilder stringBuilder = new StringBuilder();
-        BitSetWriter bitSetWriter = new BitSetWriter();
+        BitSetBuilder bitSetBuilder = new BitSetBuilder();
         var current = hufdanEncoded.getTree();
-        preOrderCollect(current, stringBuilder, bitSetWriter);
+        preOrderCollect(current, stringBuilder, bitSetBuilder);
 
         this.hufdanSerilizable = new HufdanSerializable(
                 stringBuilder.toString().toCharArray(),
-                bitSetWriter.getBitSet(),
+                bitSetBuilder.getBitSet(),
                 bits);
     }
 
@@ -36,7 +36,7 @@ public class HufdanFileWriter {
         return bitSet;
     }
 
-    private void preOrderCollect(IHufdanNode node, StringBuilder builder, BitSetWriter bs) {
+    private void preOrderCollect(IHufdanNode node, StringBuilder builder, BitSetBuilder bs) {
         if(node instanceof HufdanLeafNode) {
             bs.write(true);
             builder.append(((HufdanLeafNode) node).getVal());

@@ -16,7 +16,7 @@ public class HufdanFileReader {
         return encoded;
     }
 
-    private static IHufdanNode arrayToTree(StringReader reader, BitsetReader bitsetReader) throws IOException {
+    private static IHufdanNode arrayToTree(StringReader reader, BitSetReader bitsetReader) throws IOException {
         var nextBit = bitsetReader.read();
         if (nextBit) {
             var ch = new String(Character.toChars(reader.read()));
@@ -38,7 +38,7 @@ public class HufdanFileReader {
         var encoded = bitsToEncoded(e.getEncoded());
         IHufdanNode tree = arrayToTree(
                 new StringReader(new String(e.getTree())),
-                new BitsetReader(e.getTreeKey())
+                new BitSetReader(e.getTreeKey())
         );
 
         return new HufdanEncoded(encoded, tree);

@@ -2,7 +2,7 @@ package io;
 
 import java.util.BitSet;
 
-public class BitSetWriter {
+public class BitSetBuilder {
     private int next = 0;
     private final BitSet bs = new BitSet();
 
