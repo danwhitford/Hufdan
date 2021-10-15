@@ -11,7 +11,7 @@ import java.util.List;
 public class HufdanFileReader {
     private static List<Boolean> bitsToEncoded(BitSet bs) {
         List<Boolean> encoded = new ArrayList<>();
-        for(int i=0; i < bs.length(); ++i) {
+        for(int i=0; i < bs.length() - 1; ++i) {
             encoded.add(bs.get(i));
         }
         return encoded;
@@ -21,7 +21,7 @@ public class HufdanFileReader {
         var head = reader.read();
         if (head == '1') {
             var ch = new String(Character.toChars(reader.read()));
-            return new HufdanLeafNode(String.valueOf(ch), 0L);
+            return new HufdanLeafNode(ch, 0L);
         } else {
             var left = arrayToTree(reader);
             var right = arrayToTree(reader);
