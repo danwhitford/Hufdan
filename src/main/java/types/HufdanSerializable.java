@@ -1,4 +1,9 @@
-package io;
+package types;
+
+import types.HufdanEncoded;
+import types.HufdanInternalNode;
+import types.HufdanLeafNode;
+import types.IHufdanNode;
 
 import java.io.Serializable;
 import java.util.BitSet;

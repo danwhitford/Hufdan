@@ -1,7 +1,6 @@
 package types;
 
 import java.util.BitSet;
-import java.util.List;
 
 public class HufdanEncoded {
     private final BitSet encoded;
