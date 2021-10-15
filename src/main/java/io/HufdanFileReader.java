@@ -10,7 +10,7 @@ import java.util.List;
 public class HufdanFileReader {
     private static List<Boolean> bitsToEncoded(BitSet bs) {
         List<Boolean> encoded = new ArrayList<>();
-        for(int i=0; i < bs.length(); ++i) {
+        for(int i=0; i < bs.length() - 1; ++i) {
             encoded.add(bs.get(i));
         }
         return encoded;

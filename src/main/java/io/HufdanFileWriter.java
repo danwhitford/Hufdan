@@ -32,6 +32,7 @@ public class HufdanFileWriter {
         for (int i=0; i < hufdanEncoded.getEncoded().size(); ++i) {
             bitSet.set(i, hufdanEncoded.getEncoded().get(i));
         }
+        bitSet.set(hufdanEncoded.getEncoded().size(), true);
         return bitSet;
     }
 

@@ -9,7 +9,8 @@ import java.nio.file.Path;
 
 public class Hufdan {
     public static void main(String... args) throws IOException, ClassNotFoundException {
-        var s = Files.readString(Path.of("test.in"));
+//        var s = Files.readString(Path.of("test.in"));
+        var s = "Lots of otters";
 
         var e = HufdanEncoder.encode(s);
 
@@ -18,6 +19,10 @@ public class Hufdan {
 
         var ee = HufdanFileReader.read("test.out");
         String decoded = HufdanDecoder.decode(ee);
-        assert (s.equals(decoded));
+
+        if (!s.equals(decoded))
+            throw new RuntimeException("poo");
+        System.out.println(s);
+        System.out.println(decoded);
     }
 }
