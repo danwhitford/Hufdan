@@ -9,7 +9,6 @@ public class HufdanEncoded {
     public HufdanEncoded(List<Boolean> encoded, IHufdanNode tree) {
         this.encoded = encoded;
         this.tree = tree;
-
     }
 
     public List<Boolean> getEncoded() {

@@ -15,10 +15,6 @@ public class HufdanQueueEntry {
         return code;
     }
 
-    public void setCode(List<Boolean> code) {
-        this.code = code;
-    }
-
     public IHufdanNode getNode() {
         return node;
     }

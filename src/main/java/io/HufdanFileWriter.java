@@ -1,6 +1,5 @@
 package io;
 
-import decode.HufdanDecoder;
 import types.HufdanEncoded;
 import types.HufdanInternalNode;
 import types.HufdanLeafNode;
@@ -12,12 +11,20 @@ import java.io.ObjectOutputStream;
 import java.util.BitSet;
 
 public class HufdanFileWriter {
-    private HufdanSerializable hufdanSerilizable;
+    private final HufdanSerializable hufdanSerilizable;
 
     public HufdanFileWriter(HufdanEncoded hufdanEncoded) {
         var bits = messageToBits(hufdanEncoded);
-        var treeArray = treeToArray(hufdanEncoded);
-        this.hufdanSerilizable = new HufdanSerializable(treeArray, bits);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        BitSetWriter bitSetWriter = new BitSetWriter();
+        var current = hufdanEncoded.getTree();
+        preOrderCollect(current, stringBuilder, bitSetWriter);
+
+        this.hufdanSerilizable = new HufdanSerializable(
+                stringBuilder.toString().toCharArray(),
+                bitSetWriter.getBitSet(),
+                bits);
     }
 
     private BitSet messageToBits(HufdanEncoded hufdanEncoded) {
@@ -28,22 +35,15 @@ public class HufdanFileWriter {
         return bitSet;
     }
 
-    private String preOrderCollect(IHufdanNode node, StringBuilder builder) {
+    private void preOrderCollect(IHufdanNode node, StringBuilder builder, BitSetWriter bs) {
         if(node instanceof HufdanLeafNode) {
-            builder.append(1);
+            bs.write(true);
             builder.append(((HufdanLeafNode) node).getVal());
         } else if (node instanceof HufdanInternalNode) {
-            builder.append(0);
-            preOrderCollect(((HufdanInternalNode) node).getLeft(), builder);
-            preOrderCollect(((HufdanInternalNode) node).getRight(), builder);
+            bs.write(false);
+            preOrderCollect(((HufdanInternalNode) node).getLeft(), builder, bs);
+            preOrderCollect(((HufdanInternalNode) node).getRight(), builder, bs);
         }
-        return builder.toString();
-    }
-
-    private char[] treeToArray(HufdanEncoded hufdanEncoded) {
-        StringBuilder stringBuilder = new StringBuilder();
-        var current = hufdanEncoded.getTree();
-        return preOrderCollect(current, stringBuilder).toCharArray();
     }
 
     public void write(String fname) throws IOException {

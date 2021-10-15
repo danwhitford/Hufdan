@@ -4,7 +4,6 @@ import types.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
@@ -17,14 +16,14 @@ public class HufdanFileReader {
         return encoded;
     }
 
-    private static IHufdanNode arrayToTree(StringReader reader) throws IOException {
-        var head = reader.read();
-        if (head == '1') {
+    private static IHufdanNode arrayToTree(StringReader reader, BitsetReader bitsetReader) throws IOException {
+        var nextBit = bitsetReader.read();
+        if (nextBit) {
             var ch = new String(Character.toChars(reader.read()));
-            return new HufdanLeafNode(String.valueOf(ch), 0L);
+            return new HufdanLeafNode(ch, 0L);
         } else {
-            var left = arrayToTree(reader);
-            var right = arrayToTree(reader);
+            var left = arrayToTree(reader, bitsetReader);
+            var right = arrayToTree(reader, bitsetReader);
             return new HufdanInternalNode(left, right);
         }
     }
@@ -37,7 +36,10 @@ public class HufdanFileReader {
         fileIn.close();
 
         var encoded = bitsToEncoded(e.getEncoded());
-        IHufdanNode tree = arrayToTree(new StringReader(new String(e.getTree())));
+        IHufdanNode tree = arrayToTree(
+                new StringReader(new String(e.getTree())),
+                new BitsetReader(e.getTreeKey())
+        );
 
         return new HufdanEncoded(encoded, tree);
     }
